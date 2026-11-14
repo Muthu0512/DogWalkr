@@ -78,6 +78,11 @@ public class WalkerPanel extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 51, 0));
         jLabel5.setText("Analyze");
         jLabel5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel5MouseClicked(evt);
+            }
+        });
 
         jSeparator1.setForeground(new java.awt.Color(255, 51, 0));
         jSeparator1.setFont(new java.awt.Font("Segoe UI Semibold", 2, 36)); // NOI18N
@@ -184,6 +189,10 @@ public class WalkerPanel extends javax.swing.JFrame {
     private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
         showPanel(new PickWalkPanel());     
     }//GEN-LAST:event_jLabel2MouseClicked
+
+    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+        showPanel(new WalkerAnalyzePanel());
+    }//GEN-LAST:event_jLabel5MouseClicked
 
      private void showPanel(javax.swing.JPanel panel){
            pnlContent.removeAll();

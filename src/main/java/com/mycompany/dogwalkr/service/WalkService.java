@@ -9,6 +9,7 @@ import com.mycompany.dogwalkr.db.DB;
 import com.mycompany.dogwalkr.model.WalkHistory;
 import com.mycompany.dogwalkr.model.Fare;
 import com.mycompany.dogwalkr.model.Walk;
+import com.mycompany.dogwalkr.exceptions.WalkNoLongerAvailableException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -124,6 +125,70 @@ public class WalkService {
         return list;
         
     }
+// Accept walk by walker
+    public static void acceptWalk(int walkId, int walkerId) throws WalkNoLongerAvailableException{
+       String sql = "UPDATE walks SET walker_id=? , status = 'Accepted' "
+               +"WHERE id=? AND status='Requested' AND walker_id IS NULL";
+       
+       int rows = 0;
+       try(Connection con = DB.getConnection();
+               PreparedStatement ps=con.prepareStatement(sql)){
+           ps.setInt(1,walkerId);
+           ps.setInt(2,walkId);
+           rows=ps.executeUpdate();
+       }catch(Exception e){
+           throw new RuntimeException("Database error while picking the walk ",e);   
+       }
+       
+       if(rows==0){
+           throw new WalkNoLongerAvailableException("Another walker has already picked");
+       }
+    }
     
    
+    
+    //auto-update accepted to completeds state after one minute of assigned duration
+    
+    public static int completeFinishedWalks(){
+        String sql = "UPDATE walks SET status='Completed' WHERE status='Accepted'"
+                +"AND walk_time +(duration_minutes+1) * interval '1 minute'<=now()";
+        try(Connection con = DB.getConnection();
+                PreparedStatement ps = con.prepareStatement(sql)){
+            return ps.executeUpdate();
+        }catch(Exception e){
+            e.printStackTrace();
+            return 0;
+        }
+    }
+    
+    // get available walks for walker
+    
+    public static List<WalkHistory> getWalksByWalker(int walkerId){
+        List<WalkHistory> list = new ArrayList<>();
+        
+        String sql = "SELECT w.id, d.name AS dog_name,w.walk_time,w.duration_minutes,w.status,w.walker_pay,w.notes "
+                + "FROM walks w JOIN dogs d ON d.id = w.dog_id "
+                + "WHERE w.walker_id= ? ORDER BY w.walk_time DESC";
+        
+        try(Connection con = DB.getConnection();
+                PreparedStatement ps= con.prepareStatement(sql)){
+            ps.setInt(1, walkerId);
+            try(ResultSet rs = ps.executeQuery()){
+                while(rs.next()){
+                    WalkHistory h = new WalkHistory();
+                    h.id = rs.getInt("id");
+                    h.dogName = rs.getString("dog_name");
+                    h.walkTime = rs.getObject("walk_time",OffsetDateTime.class);
+                    h.durationMinutes = rs.getInt("duration_minutes");
+                    h.status = rs.getString("status");
+                    h.walkerPay=rs.getInt("walker_pay");
+                    h.notes = rs.getString("notes");
+                    list.add(h);
+                     }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

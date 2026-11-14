@@ -4,8 +4,10 @@
  */
 package com.mycompany.dogwalkr.ui.walker;
 
+import com.mycompany.dogwalkr.db.Session;
 import com.mycompany.dogwalkr.model.WalkHistory;
 import com.mycompany.dogwalkr.service.WalkService;
+import com.mycompany.dogwalkr.exceptions.WalkNoLongerAvailableException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.ArrayList;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
 
 public class PickWalkPanel extends javax.swing.JPanel {
@@ -160,7 +163,34 @@ public class PickWalkPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAcceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAcceptActionPerformed
-        // TODO add your handling code here:
+        int row = tblAvailable.getSelectedRow();
+        if(row <0 || row>= currentWalks.size()){
+            JOptionPane.showMessageDialog(this,"Please select a walk first...");
+            return;
+        }
+        if(Session.currentUser==null){
+            JOptionPane.showMessageDialog(this,"Please login to perform tasks");
+            return;
+        }
+        
+        WalkHistory choosen  = currentWalks.get(row);
+        int answer = JOptionPane.showConfirmDialog(this,"Pick the walk for "+choosen.dogName
+                + " ?\nYou earn \u20b9 "+choosen.walkerPay,
+                "Confirm " ,JOptionPane.YES_NO_OPTION);
+        if(answer !=JOptionPane.YES_OPTION){
+            return;
+        }
+        
+        try{
+            WalkService.acceptWalk(choosen.id, (int) Session.currentUser.id);
+            JOptionPane.showMessageDialog(this,"A walk has been picked successfully");
+          }catch(WalkNoLongerAvailableException e){
+              JOptionPane.showMessageDialog(this, e.getMessage(),"OOPS! Too late",JOptionPane.WARNING_MESSAGE);
+          }catch(RuntimeException e){
+              e.printStackTrace();
+              JOptionPane.showMessageDialog(this,"Something went wrong please try after sometimes...","Error",JOptionPane.ERROR_MESSAGE);
+          }
+        loadAvailable();
     }//GEN-LAST:event_btnAcceptActionPerformed
     
     // Code to fetch data for table 
@@ -206,7 +236,7 @@ public class PickWalkPanel extends javax.swing.JPanel {
         lblCount.setText(String.valueOf(currentWalks.size()));
         
         if(selectedId !=-1){
-            for(int i=0; i<= currentWalks.size();i++){
+            for(int i=0; i<currentWalks.size();i++){
                 if(currentWalks.get(i).id == selectedId){
                     tblAvailable.setRowSelectionInterval(i,i);
                     break;
