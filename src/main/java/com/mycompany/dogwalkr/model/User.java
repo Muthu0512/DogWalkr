@@ -11,8 +11,13 @@ package com.mycompany.dogwalkr.model;
 public class User {
     public long id;
     public String username;
+    public String email;
+    public String mobile;
+    public String location;
     public String role;
     public String status;
+    public byte[] photo; 
+    
 
-     
+    
 }
