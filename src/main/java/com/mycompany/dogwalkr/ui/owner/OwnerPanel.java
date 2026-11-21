@@ -7,6 +7,8 @@ package com.mycompany.dogwalkr.ui.owner;
 import com.mycompany.dogwalkr.ui.auth.Login;
 import com.mycompany.dogwalkr.db.Session;
 import com.mycompany.dogwalkr.model.Dog;
+import com.mycompany.dogwalkr.ui.common.UpdateProfilePanel;
+
 public class OwnerPanel extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(OwnerPanel.class.getName());
@@ -15,6 +17,7 @@ public class OwnerPanel extends javax.swing.JFrame {
     public OwnerPanel() {
         initComponents();
         ownerId = (int) Session.currentUser.id;
+        showPanel(new AnalyzePanel());
    
     }
 
@@ -71,6 +74,11 @@ public class OwnerPanel extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 51, 0));
         jLabel3.setText("Update Profile");
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 2, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 51, 0));
@@ -220,6 +228,10 @@ public class OwnerPanel extends javax.swing.JFrame {
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         showPanel(new AnalyzePanel());
     }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        showPanel(new UpdateProfilePanel());
+    }//GEN-LAST:event_jLabel3MouseClicked
     
     //show my dogs panel
     

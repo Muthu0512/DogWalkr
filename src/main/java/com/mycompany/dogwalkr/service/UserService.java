@@ -181,6 +181,8 @@ public class UserService {
                     return ps.executeUpdate()==1;
                 }
                 
+             }catch(WrongPasswordException e){
+                 throw e;
              }catch(Exception e){
                  e.printStackTrace();
              }

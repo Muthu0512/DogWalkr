@@ -21,12 +21,26 @@ public class AdminPanel extends javax.swing.JFrame {
      */
     public AdminPanel() {
         initComponents();
-        loadUsers();
+        showoverView();
     }
 
    
     private String currentRole = "OWNER";
     private String currentStatus = null;
+    private AdminOverviewPanel overviewPanel;
+    
+    
+    private void showoverView(){
+        if(overviewPanel == null){
+            overviewPanel = new AdminOverviewPanel();
+            overviewPanel.setBounds(250,0,650,600);
+            jPanel1.add(overviewPanel);
+        }else{
+            overviewPanel.loadStats();
+        }
+        jPanel3.setVisible(false);
+        overviewPanel.setVisible(true);
+    }
     
     
     // code to load users from databases
@@ -65,7 +79,7 @@ public class AdminPanel extends javax.swing.JFrame {
             String username = tblUsers.getValueAt(row,1).toString();
             
             UserService.updateStatus(id,newStatus);
-            JOptionPane.showMessageDialog(this, username +"is now "+ newStatus);
+            JOptionPane.showMessageDialog(this, username +" is now "+ newStatus);
             loadUsers();
         }catch(Exception e){
             e.printStackTrace();
@@ -77,6 +91,8 @@ public class AdminPanel extends javax.swing.JFrame {
     // Methods to change the Owner, Walker tabs 
     
     private void showRole(String role, String title){
+        if(overviewPanel !=null) overviewPanel.setVisible(false);
+        jPanel3.setVisible(true);
         currentRole = role;
         currentStatus = null;
         btnTitle.setText(title);
@@ -131,6 +147,11 @@ public class AdminPanel extends javax.swing.JFrame {
         lblReports.setForeground(new java.awt.Color(255, 51, 0));
         lblReports.setText("Reports");
         lblReports.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblReports.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblReportsMouseClicked(evt);
+            }
+        });
 
         lblOwners.setFont(new java.awt.Font("Segoe UI", 2, 24)); // NOI18N
         lblOwners.setForeground(new java.awt.Color(255, 51, 0));
@@ -422,6 +443,10 @@ public class AdminPanel extends javax.swing.JFrame {
     private void lblWalkersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblWalkersMouseClicked
         showRole("WALKER","Walkers");
     }//GEN-LAST:event_lblWalkersMouseClicked
+
+    private void lblReportsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblReportsMouseClicked
+       showoverView();
+    }//GEN-LAST:event_lblReportsMouseClicked
 
     /**
      * @param args the command line arguments

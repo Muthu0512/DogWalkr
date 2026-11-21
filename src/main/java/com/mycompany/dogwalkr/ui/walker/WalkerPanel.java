@@ -5,6 +5,7 @@
 package com.mycompany.dogwalkr.ui.walker;
 
 import com.mycompany.dogwalkr.ui.auth.Login;
+import com.mycompany.dogwalkr.ui.common.UpdateProfilePanel;
 
 
  
@@ -17,6 +18,7 @@ public class WalkerPanel extends javax.swing.JFrame {
      */
     public WalkerPanel() {
         initComponents();
+        showPanel(new PickWalkPanel());
     }
 
     /**
@@ -73,6 +75,11 @@ public class WalkerPanel extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(255, 51, 0));
         jLabel3.setText("Update Profile");
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel3MouseClicked(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 2, 24)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 51, 0));
@@ -194,6 +201,10 @@ public class WalkerPanel extends javax.swing.JFrame {
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         showPanel(new WalkerAnalyzePanel());
     }//GEN-LAST:event_jLabel5MouseClicked
+
+    private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
+        showPanel(new UpdateProfilePanel());
+    }//GEN-LAST:event_jLabel3MouseClicked
 
      private void showPanel(javax.swing.JPanel panel){
            pnlContent.removeAll();
