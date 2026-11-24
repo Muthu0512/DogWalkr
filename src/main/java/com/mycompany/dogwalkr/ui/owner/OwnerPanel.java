@@ -8,6 +8,7 @@ import com.mycompany.dogwalkr.ui.auth.Login;
 import com.mycompany.dogwalkr.db.Session;
 import com.mycompany.dogwalkr.model.Dog;
 import com.mycompany.dogwalkr.ui.common.UpdateProfilePanel;
+import com.mycompany.dogwalkr.ui.common.ChatPanel;
 
 public class OwnerPanel extends javax.swing.JFrame {
     
@@ -18,6 +19,7 @@ public class OwnerPanel extends javax.swing.JFrame {
         initComponents();
         ownerId = (int) Session.currentUser.id;
         showPanel(new AnalyzePanel());
+        showPanel(new ChatPanel("OWNER"));
    
     }
 
